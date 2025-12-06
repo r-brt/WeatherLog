@@ -1,0 +1,27 @@
+{% extends 'weather_logs/base.html' %}
+
+{% block content %}
+
+  <p><a href="{% url 'weather_logs:state' abbrev %}">
+          &lt;&lt; Back: {{ state.name }}</a></p>
+
+  <p><a href="{% url 'weather_logs:station_year' state.abbreviation station.station_id 2023 %}">
+          Year 2023</a></p>
+  <p><a href="{% url 'weather_logs:station_year' state.abbreviation station.station_id 2024 %}">
+          Year 2024</a></p>
+
+  <p>Station: {{ station.name }}</p>
+  <p>Total Readings: {{ total }}</p>
+
+  <p>Daily Temperature Readings:</p>
+    <ul>
+      {% for daily in dailies %}
+      <li>
+        <p>{{ daily.date }} - {{ daily.temp_min }} - {{ daily.temp_max }} - {{ daily.temp_avg }}</p>
+    </li>
+    {% empty %}
+      <li>There are no readings for this station yet.</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

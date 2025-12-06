@@ -1,0 +1,46 @@
+{% extends 'weather_logs/base.html' %}
+
+{% block content %}
+
+  <p><a href="{% url 'weather_logs:state' abbrev %}">
+          &lt;&lt; Back: {{ state.name }}</a></p>
+
+    <p>Weather by Year:</p>
+    - 
+      {% for yr in years %}
+        {% if yr == year %}
+          {{ year }}
+        {% else %}
+          <a href="{% url 'weather_logs:station_year' state.abbreviation station.station_id yr %}">
+          {{ yr }}</a>
+        {% endif %}
+         - 
+    {% empty %}
+      None.
+    {% endfor %}
+
+  <p>Station: {{ station.name }}</p>
+  <p>Total Readings: {{ total }}</p>
+  <p>Readings for {{ year }}: {{ total_year }}</p>
+
+  <p>Daily Temperature Readings:</p>
+
+  <table style="border: 1px solid black;">
+    <tr style="border: 1px solid black;">
+      <th style="border: 1px solid black; padding: 15px;  text-align: center;">Date</th>
+      <th style="border: 1px solid black; padding: 15px;  text-align: center;">Min Temp</th>
+      <th style="border: 1px solid black; padding: 15px;  text-align: center;">Max Temp</th>
+      <th style="border: 1px solid black; padding: 15px;  text-align: center;">Median Temp</th>
+    </tr>
+    {% for daily in dailies %}
+    <tr style="border: 1px solid black;"> 
+      <td style="border: 1px solid black; padding: 2px;  text-align: center;">{{ daily.date.month }}/{{ daily.date.day }}/{{ daily.date.year }}</td>
+      <td style="border: 1px solid black; padding: 2px;  text-align: center;">{% if daily.temp_min == None %} - {% else %}{{ daily.temp_min }}{% endif %}</td>
+      <td style="border: 1px solid black; padding: 2px;  text-align: center;">{% if daily.temp_max == None %} - {% else %}{{ daily.temp_max }}{% endif %}</td>
+      <td style="border: 1px solid black; padding: 2px;  text-align: center;">{{ daily.temp_median }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+{% endblock content %}
+

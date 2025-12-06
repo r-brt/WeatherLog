@@ -1,0 +1,20 @@
+{% extends 'weather_logs/base.html' %}
+
+{% block content %}
+
+  <p><a href="{% url 'weather_logs:states' %}">
+          &lt;&lt; Back: States</a></p>
+
+  <p>State: {{ state.name }}</p>
+
+  <p>Weather Stations:</p>
+    <ul>
+      {% for station in stations %}
+      <li><a href="{% url 'weather_logs:station' state.abbreviation station.station_id %}">
+          {{ station.station_id }} - {{ station.name }}</a></li>
+    {% empty %}
+      <li>There are no stations for this state yet.</li>
+    {% endfor %}
+</ul>
+
+{% endblock content %}

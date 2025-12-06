@@ -1,0 +1,16 @@
+{% extends 'weather_logs/base.html' %}
+
+{% block content %}
+
+  <p>States</p>
+
+    <ul>
+      {% for state in states %}
+        <li><a href="{% url 'weather_logs:state' state.abbreviation %}">
+          {{ state.name }}</a></li>
+      {% empty %}
+        <li>No states have been added yet.</li>
+      {% endfor %}
+    </ul>
+
+{% endblock content %}

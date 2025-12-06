@@ -7,7 +7,7 @@ def run():
     # Read CSV file into a DataFrame
     # Get CSV files list from a folder
     path = 'weather_logs/import_data'
-    csv_files = glob.glob(path + "/2023_Virginia_Dailies_1.csv")
+    csv_files = glob.glob(path + "/*Dailies*.csv")
     # csv_file_path = 'weather_logs/import_data/2023_Virginia_Dailies_2.csv'
 
     df_list = (pd.read_csv(file) for file in csv_files)
@@ -22,7 +22,7 @@ def run():
         for index, row in df.iterrows():
             # Check if this date already exists for this station before creating
             station = Station.objects.get(station_id=row['STATION'])
-            new_date = pd.to_datetime(row['DATE'], format='%m/%d/%Y')
+            new_date = pd.to_datetime(row['DATE'], format='%Y-%m-%d')
             if len(DailyTemp.objects.filter(station_id=station, date=new_date)) == 0:
                 daily = DailyTemp(
                     station_id=station,

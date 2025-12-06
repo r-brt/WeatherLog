@@ -11,10 +11,19 @@
     <ul>
       {% for station in stations %}
       <li><a href="{% url 'weather_logs:station' state.abbreviation station.station_id %}">
-          {{ station.station_id }} - {{ station.name }}</a></li>
-    {% empty %}
-      <li>There are no stations for this state yet.</li>
-    {% endfor %}
-</ul>
+        {{ station.station_id }} - {{ station.name }}</a></li>
+      {% empty %}
+        <li>There are no stations for this state yet.</li>
+      {% endfor %}
+  </ul>
+
+  <p>Weather Stations without Data:</p>
+    <ul>
+      {% for station in stations_inactive %}
+      <li>{{ station.station_id }} - {{ station.name }}</li>
+      {% empty %}
+        
+      {% endfor %}
+  </ul>
 
 {% endblock content %}

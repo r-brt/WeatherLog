@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import numpy as np
+import datetime
 
 from .models import State, Station, DailyTemp
 
@@ -11,20 +12,30 @@ def index(request):
 def states(request):
     """Show all states."""
     states = State.objects.order_by('name')
-    context = {'states': states}
+    states_inactive = []
+
+    for state in states:
+        stations = state.station_set
+        if(stations.count() == 0):
+            states_inactive.append(state)
+            states = states.exclude(id=state.id)
+
+    context = {'states': states, 'states_inactive':states_inactive}
     return render(request, 'weather_logs/states.html', context)
 
 def state(request, abbrev):
     """Show a single state and all its Weather Stations."""
     state = State.objects.get(abbreviation=abbrev)
     stations = state.station_set.order_by('name')
+    stations_inactive = []
     # do not list any stations that do not have any readings yet
     for station in stations:
         dailies = station.dailytemp_set
         dailies = dailies.exclude(temp_min=None, temp_max=None)
         if(dailies.count() == 0):
+            stations_inactive.append(station)
             stations = stations.exclude(id=station.id)
-    context = {'state': state, 'stations': stations}
+    context = {'state': state, 'stations': stations, 'stations_inactive': stations_inactive}
     return render(request, 'weather_logs/state.html', context)
 
 def station(request, abbrev, id):
@@ -47,7 +58,9 @@ def station_year(request, abbrev, id, year):
     state = station.state
 
     # calculate monthly averages for current year
-    monthly_med = []
+    months_labels = []
+    monthly_minmax = []
+
     months = [x.month for x in dailies.dates('date','month')]
     for x in range (1,13):
         monthlies = dailies.filter(date__month=x)
@@ -62,10 +75,11 @@ def station_year(request, abbrev, id, year):
             max_med = " ? "
         else:
             max_med = f"{np.mean(max_list):.1f}"
-        month = monthlies.filter(date__month=x).first().date.strftime('%B')
-        
+        #month = monthlies.filter(date__month=x).first().date.strftime('%B')
+        month = datetime.datetime(2025, x, 1).strftime('%B')
+        months_labels.append(month)
+        monthly_minmax.append((min_med,max_med))        
 
-        monthly_med.append((month, min_med+" - "+max_med))
 
 
 
@@ -73,5 +87,5 @@ def station_year(request, abbrev, id, year):
 
     context = {'station': station, 'dailies': dailies, 'total': total,
                'total_year': total_year, 'year':year, 'years':years, 
-               'abbrev':abbrev, 'state':state, 'months':months, 'monthly_med':monthly_med}
+               'abbrev':abbrev, 'state':state, 'months_labels':months_labels, 'monthly_minmax':monthly_minmax}
     return render(request, 'weather_logs/station_year.html', context)

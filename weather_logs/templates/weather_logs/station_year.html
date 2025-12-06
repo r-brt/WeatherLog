@@ -26,13 +26,13 @@
   <p>Monthly Averages:</p>
   <table style="border: 1px solid black;">
     <tr style="border: 1px solid black;">
-        {% for month in monthly_med %}
-      <th style="border: 1px solid black; padding: 15px;  text-align: center;">{{month.0}}</th>
+        {% for month in months_labels %}
+      <th style="border: 1px solid black; padding: 15px;  text-align: center;">{{month}}</th>
       {% endfor %}
     </tr>
     <tr style="border: 1px solid black;">
-        {% for month in monthly_med %}
-      <th style="border: 1px solid black; padding: 15px;  text-align: center;">{{month.1}}</th>
+        {% for minmax in monthly_minmax %}
+      <th style="border: 1px solid black; padding: 15px;  text-align: center;">MIN: {{minmax.0}}<p>MAX: {{minmax.1}}</p></th>
       {% endfor %}
     </tr>
   </table>

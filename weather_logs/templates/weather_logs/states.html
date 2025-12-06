@@ -2,7 +2,7 @@
 
 {% block content %}
 
-  <p>States</p>
+  <p>States:</p>
 
     <ul>
       {% for state in states %}
@@ -10,6 +10,15 @@
           {{ state.name }}</a></li>
       {% empty %}
         <li>No states have been added yet.</li>
+      {% endfor %}
+    </ul>
+
+    <p>States without Data:</p>
+    <ul>
+      {% for state in states_inactive %}
+        <li>{{ state.name }}</li>
+      {% empty %}
+        
       {% endfor %}
     </ul>
 

@@ -7,7 +7,7 @@ def run():
     # Read CSV file into a DataFrame
     # Get CSV files list from a folder
     path = 'weather_logs/import_data'
-    csv_files = glob.glob(path + "/*DC_Dailies.csv")
+    csv_files = glob.glob(path + "/2023_Virginia_Dailies_1.csv")
     # csv_file_path = 'weather_logs/import_data/2023_Virginia_Dailies_2.csv'
 
     df_list = (pd.read_csv(file) for file in csv_files)

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import numpy as np
 
 from .models import State, Station, DailyTemp
 
@@ -44,7 +45,33 @@ def station_year(request, abbrev, id, year):
     dailies = dailies.filter(date__year=year)
     total_year = dailies.count()
     state = station.state
+
+    # calculate monthly averages for current year
+    monthly_med = []
+    months = [x.month for x in dailies.dates('date','month')]
+    for x in range (1,13):
+        monthlies = dailies.filter(date__month=x)
+        min_list = monthlies.values_list('temp_min', flat=True).exclude(temp_min__isnull=True)
+        max_list = monthlies.values_list('temp_max', flat=True).exclude(temp_max__isnull=True)
+        if(min_list.count() == 0):
+            min_med = " ? "
+        else:
+            min_med = f"{np.mean(min_list):.1f}"
+            
+        if(max_list.count() == 0):
+            max_med = " ? "
+        else:
+            max_med = f"{np.mean(max_list):.1f}"
+        month = monthlies.filter(date__month=x).first().date.strftime('%B')
+        
+
+        monthly_med.append((month, min_med+" - "+max_med))
+
+
+
+
+
     context = {'station': station, 'dailies': dailies, 'total': total,
                'total_year': total_year, 'year':year, 'years':years, 
-               'abbrev':abbrev, 'state':state}
+               'abbrev':abbrev, 'state':state, 'months':months, 'monthly_med':monthly_med}
     return render(request, 'weather_logs/station_year.html', context)
